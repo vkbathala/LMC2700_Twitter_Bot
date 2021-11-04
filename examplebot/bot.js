@@ -7,6 +7,8 @@ var T = new Twit(require('./config.js'));
 // This is the URL of a search for the latest tweets on the '#mediaarts' hashtag.
 var mediaArtsSearch = {q: "#mediaarts", count: 10, result_type: "recent"}; 
 
+var words = ["Chirp ", "Caw", "Hoot"];
+
 // This function finds the latest tweet with the #mediaarts hashtag, and retweets it.
 function retweetLatest() {
 	T.get('search/tweets', mediaArtsSearch, function (error, data) {
@@ -17,7 +19,17 @@ function retweetLatest() {
 	  	// ...then we grab the ID of the tweet we want to retweet...
 		var retweetId = data.statuses[0].id_str;
 		// ...and then we tell Twitter we want to retweet it!
-		T.post('statuses/retweet/' + retweetId, { }, function (error, response) {
+		let tweetLocation = ' https://twitter.com/TwitterDev/statuses/' + retweetId;
+		let text = data.statuses[0].text;
+		const words = text.split();
+		let length = words.length;
+		let counter = 0;
+		let birdWords = "";
+		let translation = "Bird Language: "
+		while (counter < length && translation.length + tweetLocation.length + birdWords.length + 6 < 280) {
+			birdWords += "Chirp ";
+		}
+		T.post('statuses/update/', {status: translation + birdWords + tweetLocation}, function (error, response) {
 			if (response) {
 				console.log('Success! Check your bot, it should have retweeted something.')
 			}
